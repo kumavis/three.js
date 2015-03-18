@@ -73,7 +73,7 @@ THREE.Sprite.prototype.toJSON = function ( meta ) {
 
   var data = THREE.Object3D.prototype.toJSON.call( this, meta );
 
-	data.material = parseMaterial( this.material ).uuid;
+	data.material = this.material.toJSON( meta ).uuid;
 
   return data;
 

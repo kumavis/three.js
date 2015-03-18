@@ -821,8 +821,8 @@ THREE.Geometry.prototype = {
 	    // add metadata
 	    data.metadata = {
 				version: 4.4,
-				type: 'BufferGeometry',
-				generator: 'BufferGeometry.toJSON'
+				type: 'Geometry',
+				generator: 'Geometry.toJSON'
 			}
 
 	  }

@@ -157,8 +157,8 @@ THREE.PointCloud.prototype.toJSON = function ( meta ) {
 
   var data = THREE.Object3D.prototype.toJSON.call( this, meta );
 
-	data.geometry = parseGeometry( this.geometry );
-	data.material = parseMaterial( this.material );
+	data.geometry = this.geometry.toJSON( meta ).uuid;
+	data.material = this.material.toJSON( meta ).uuid;
 
   return data;
 

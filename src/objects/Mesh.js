@@ -328,8 +328,8 @@ THREE.Mesh.prototype.toJSON = function ( meta ) {
 
   var data = THREE.Object3D.prototype.toJSON.call( this, meta );
 
-	data.geometry = parseGeometry( object.geometry ).uuid;
-	data.material = parseMaterial( object.material ).uuid;
+	data.geometry = this.geometry.toJSON( meta ).uuid;
+	data.material = this.material.toJSON( meta ).uuid;
 
   return data;
 
