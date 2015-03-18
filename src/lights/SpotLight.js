@@ -85,12 +85,12 @@ THREE.SpotLight.prototype.toJSON = function ( meta ) {
 
   var data = THREE.Object3D.prototype.toJSON.call( this, meta );
 
-	data.color = object.color.getHex();
-	data.intensity = object.intensity;
-	data.distance = object.distance;
-	data.angle = object.angle;
-	data.exponent = object.exponent;
-	data.decay = object.decay;
+	data.object.color = this.color.getHex();
+	data.object.intensity = this.intensity;
+	data.object.distance = this.distance;
+	data.object.angle = this.angle;
+	data.object.exponent = this.exponent;
+	data.object.decay = this.decay;
 
   return data;
 

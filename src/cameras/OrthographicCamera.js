@@ -61,12 +61,12 @@ THREE.OrthographicCamera.prototype.toJSON = function ( meta ) {
 
 	var data = THREE.Object3D.prototype.toJSON.call( this, meta );
 
-	data.left = this.left;
-	data.right = this.right;
-	data.top = this.top;
-	data.bottom = this.bottom;
-	data.near = this.near;
-	data.far = this.far;
+	data.object.left = this.left;
+	data.object.right = this.right;
+	data.object.top = this.top;
+	data.object.bottom = this.bottom;
+	data.object.near = this.near;
+	data.object.far = this.far;
 
 	return data;
 

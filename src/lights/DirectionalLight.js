@@ -116,8 +116,8 @@ THREE.DirectionalLight.prototype.toJSON = function ( meta ) {
 
   var data = THREE.Object3D.prototype.toJSON.call( this, meta );
 
-  data.color = this.color.getHex();
-	data.intensity = this.intensity;
+  data.object.color = this.color.getHex();
+	data.object.intensity = this.intensity;
 
   return data;
 

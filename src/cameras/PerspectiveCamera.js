@@ -145,10 +145,10 @@ THREE.PerspectiveCamera.prototype.toJSON = function ( meta ) {
 
 	var data = THREE.Object3D.prototype.toJSON.call( this, meta );
 
-	data.fov = this.fov;
-	data.aspect = this.aspect;
-	data.near = this.near;
-	data.far = this.far;
+	data.object.fov = this.fov;
+	data.object.aspect = this.aspect;
+	data.object.near = this.near;
+	data.object.far = this.far;
 
 	return data;
 

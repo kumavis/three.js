@@ -196,9 +196,9 @@ THREE.Line.prototype.toJSON = function ( meta ) {
 
   var data = THREE.Object3D.prototype.toJSON.call( this, meta );
 
-	data.geometry = object.geometry.toJSON( meta ).uuid;
-	data.material = object.material.toJSON( meta ).uuid;
-	data.mode = object.mode;
+	data.object.geometry = this.geometry.toJSON( meta ).uuid;
+	data.object.material = this.material.toJSON( meta ).uuid;
+	data.object.mode = this.mode;
 
   return data;
 

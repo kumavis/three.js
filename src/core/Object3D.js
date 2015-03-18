@@ -569,13 +569,16 @@ THREE.Object3D.prototype = {
 
 	toJSON: function( meta ) {
 
+		var isRootObject = ( meta === undefined );
+
 	  // we will store all serialization data on 'data'
 	  var data = {};
+	  var metadata;
 
 	  // meta is a hash used to collect geometries, materials.
 	  // not providing it implies that this is the root object
 	  // being serialized.
-	  if ( meta === undefined ) {
+	  if ( isRootObject ) {
 
 	    // initialize meta obj
 	    meta = {
@@ -589,7 +592,7 @@ THREE.Object3D.prototype = {
 	    data.materials = meta.materials;
 
 	    // add metadata
-	    data.metadata = {
+	    metadata = {
 				version: 4.4,
 				type: 'Object',
 				generator: 'Object3D.toJSON'
@@ -619,7 +622,26 @@ THREE.Object3D.prototype = {
 
 	  }
 
-	  return data;
+	  // wrap serialized object with additional data
+
+	  var output;
+
+	  if ( isRootObject ) {
+
+	  	output = {
+	  		metadata: metadata,
+	  		geometries: geometries,
+	  		materials: materials,
+	  		object: data
+	  	};
+
+	  } else {
+
+	  	ouput = { object: data };
+
+	  }
+
+	  return output;
 
 	},
 

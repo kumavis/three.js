@@ -35,10 +35,10 @@ THREE.PointLight.prototype.toJSON = function ( meta ) {
 
   var data = THREE.Object3D.prototype.toJSON.call( this, meta );
 
-	data.color = this.color.getHex();
-	data.intensity = this.intensity;
-	data.distance = this.distance;
-	data.decay = this.decay;
+	data.object.color = this.color.getHex();
+	data.object.intensity = this.intensity;
+	data.object.distance = this.distance;
+	data.object.decay = this.decay;
 
   return data;
 
