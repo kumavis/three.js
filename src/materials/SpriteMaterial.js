@@ -73,6 +73,6 @@ THREE.SpriteMaterial.prototype.toJSON = function ( meta ) {
 
 	}
 
-	return data
+	return data;
 
 };

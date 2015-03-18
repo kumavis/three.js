@@ -181,6 +181,6 @@ THREE.MeshPhongMaterial.prototype.toJSON = function ( meta ) {
 
 	}
 
-	return data
+	return data;
 
 };

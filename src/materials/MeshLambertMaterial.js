@@ -151,6 +151,6 @@ THREE.MeshLambertMaterial.prototype.toJSON = function ( meta ) {
 
 	}
 
-	return data
+	return data;
 
 };

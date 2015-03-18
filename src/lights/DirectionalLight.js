@@ -112,7 +112,7 @@ THREE.DirectionalLight.prototype.clone = function () {
 
 };
 
-THREE.DirectionalLightprototype.toJSON = function ( meta ) {
+THREE.DirectionalLight.prototype.toJSON = function ( meta ) {
 
   var data = THREE.Object3D.prototype.toJSON.call( this, meta );
 

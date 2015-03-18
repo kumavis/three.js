@@ -160,7 +160,7 @@ THREE.PointCloud.prototype.toJSON = function ( meta ) {
 	data.geometry = parseGeometry( this.geometry );
 	data.material = parseMaterial( this.material );
 
-  return data
+  return data;
 
 };
 

@@ -136,6 +136,6 @@ THREE.MeshBasicMaterial.prototype.toJSON = function ( meta ) {
 
 	}
 
-	return data
+	return data;
 
 };

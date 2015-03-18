@@ -75,7 +75,7 @@ THREE.Sprite.prototype.toJSON = function ( meta ) {
 
 	data.material = parseMaterial( this.material ).uuid;
 
-  return data
+  return data;
 
 };
 

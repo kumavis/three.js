@@ -23,7 +23,7 @@ THREE.AmbientLight.prototype.clone = function () {
 
 };
 
-THREE.AmbientLightprototype.toJSON = function ( meta ) {
+THREE.AmbientLight.prototype.toJSON = function ( meta ) {
 
   var data = THREE.Object3D.prototype.toJSON.call( this, meta );
 

@@ -150,6 +150,6 @@ THREE.PerspectiveCamera.prototype.toJSON = function ( meta ) {
 	data.near = this.near;
 	data.far = this.far;
 
-	return data
+	return data;
 
 };
