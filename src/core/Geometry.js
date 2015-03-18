@@ -765,6 +765,7 @@ THREE.Geometry.prototype = {
 			// if any duplicate vertices are found in a Face3
 			// we have to remove the face as nothing can be saved
 			for ( var n = 0; n < 3; n ++ ) {
+
 				if ( indices[ n ] == indices[ ( n + 1 ) % 3 ] ) {
 
 					dupIndex = n;
@@ -772,11 +773,13 @@ THREE.Geometry.prototype = {
 					break;
 
 				}
+
 			}
 
 		}
 
 		for ( i = faceIndicesToRemove.length - 1; i >= 0; i -- ) {
+
 			var idx = faceIndicesToRemove[ i ];
 
 			this.faces.splice( idx, 1 );
@@ -800,49 +803,49 @@ THREE.Geometry.prototype = {
 	toJSON: function( meta ) {
 
 	  // we will store all serialization data on 'data'
-	  var data = {};
+		var data = {};
 
 	  // meta is a hash used to collect geometries, materials.
 	  // not providing it implies that this is the root object
 	  // being serialized.
-	  if ( meta === undefined ) {
+		if ( meta === undefined ) {
 
 	    // initialize meta obj
-	    meta = {
-	      geometries: [],
-	      materials: []
+			meta = {
+				geometries: [],
+				materials: []
 	    }
 
 	    // bind meta's geometry and material collections to our 'data' b/c
 	    // this is the root obj being serialized
-	    data.geometries = meta.geometries;
-	    data.materials = meta.materials;
+			data.geometries = meta.geometries;
+			data.materials = meta.materials;
 
 	    // add metadata
-	    data.metadata = {
+			data.metadata = {
 				version: 4.4,
 				type: 'Geometry',
 				generator: 'Geometry.toJSON'
 			}
 
-	  }
+		}
 
 	  // only serialize if not in meta geometries cache
-	  if ( meta.geometries[ this.uuid ] !== undefined ) {
+		if ( meta.geometries[ this.uuid ] !== undefined ) {
 
-	  	data = meta.geometries[ this.uuid ];
+			data = meta.geometries[ this.uuid ];
 
-	  } else {
+		} else {
 
 		  // standard Geometry serialization
 
-		  data.type = this.type;
-		  data.uuid = this.uuid;
-		  if ( this.name !== '' ) data.name = this.name;
-		  data.data = {};
-		  data.data.attributes = {};
+			data.type = this.type;
+			data.uuid = this.uuid;
+			if ( this.name !== '' ) data.name = this.name;
+			data.data = {};
+			data.data.attributes = {};
 
-		  if ( this.parameters !== undefined ) {
+			if ( this.parameters !== undefined ) {
 
 				var parameters = this.parameters;
 
@@ -960,7 +963,7 @@ THREE.Geometry.prototype = {
 
 			function setBit( value, position, enabled ) {
 
-				return enabled ? value | ( 1 << position ) : value & ( ~ ( 1 << position) );
+				return enabled ? value | ( 1 << position ) : value & ( ~ ( 1 << position ) );
 
 			}
 
@@ -1025,7 +1028,7 @@ THREE.Geometry.prototype = {
 
 		}
 
-	  return data;
+		return data;
 
 	},
 

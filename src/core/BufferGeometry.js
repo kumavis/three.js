@@ -691,7 +691,7 @@ THREE.BufferGeometry.prototype = {
 		var indexPtr = 0;
 		var vertexPtr = 0;
 
-		var offsets = [ { start:0, count:0, index:0 } ];
+		var offsets = [ { start: 0, count: 0, index: 0 } ];
 		var offset = offsets[ 0 ];
 
 		var duplicatedVertices = 0;
@@ -699,50 +699,65 @@ THREE.BufferGeometry.prototype = {
 		var faceVertices = new Int32Array( 6 );
 		var vertexMap = new Int32Array( vertices.length );
 		var revVertexMap = new Int32Array( vertices.length );
-		for ( var j = 0; j < vertices.length; j ++ ) { vertexMap[ j ] = - 1; revVertexMap[ j ] = - 1; }
+		for ( var j = 0; j < vertices.length; j ++ ) {
+
+			vertexMap[ j ] = - 1; revVertexMap[ j ] = - 1;
+
+		}
 
 		/*
 			Traverse every face and reorder vertices in the proper offsets of 65k.
 			We can have more than 65k entries in the index buffer per offset, but only reference 65k values.
 		*/
 		for ( var findex = 0; findex < facesCount; findex ++ ) {
+
 			newVerticeMaps = 0;
 
 			for ( var vo = 0; vo < 3; vo ++ ) {
+
 				var vid = indices[ findex * 3 + vo ];
 				if ( vertexMap[ vid ] == - 1 ) {
 					//Unmapped vertice
 					faceVertices[ vo * 2 ] = vid;
 					faceVertices[ vo * 2 + 1 ] = - 1;
 					newVerticeMaps ++;
-				} else if ( vertexMap[ vid ] < offset.index ) {
+
+} else if ( vertexMap[ vid ] < offset.index ) {
 					//Reused vertices from previous block (duplicate)
-					faceVertices[ vo * 2 ] = vid;
-					faceVertices[ vo * 2 + 1 ] = - 1;
-					duplicatedVertices ++;
-				} else {
+	faceVertices[ vo * 2 ] = vid;
+	faceVertices[ vo * 2 + 1 ] = - 1;
+	duplicatedVertices ++;
+
+} else {
 					//Reused vertice in the current block
-					faceVertices[ vo * 2 ] = vid;
-					faceVertices[ vo * 2 + 1 ] = vertexMap[ vid ];
-				}
+	faceVertices[ vo * 2 ] = vid;
+	faceVertices[ vo * 2 + 1 ] = vertexMap[ vid ];
+
+}
+
 			}
 
 			var faceMax = vertexPtr + newVerticeMaps;
 			if ( faceMax > ( offset.index + size ) ) {
-				var new_offset = { start:indexPtr, count:0, index:vertexPtr };
+
+				var new_offset = { start: indexPtr, count: 0, index: vertexPtr };
 				offsets.push( new_offset );
 				offset = new_offset;
 
 				//Re-evaluate reused vertices in light of new offset.
 				for ( var v = 0; v < 6; v += 2 ) {
+
 					var new_vid = faceVertices[ v + 1 ];
 					if ( new_vid > - 1 && new_vid < offset.index )
 						faceVertices[ v + 1 ] = - 1;
+
 				}
+
 			}
 
 			//Reindex the face.
 			for ( var v = 0; v < 6; v += 2 ) {
+
 				var vid = faceVertices[ v ];
 				var new_vid = faceVertices[ v + 1 ];
 
@@ -753,7 +768,9 @@ THREE.BufferGeometry.prototype = {
 				revVertexMap[ new_vid ] = vid;
 				sortedIndices[ indexPtr ++ ] = new_vid - offset.index; //XXX overflows at 16bit
 				offset.count ++;
+
 			}
+
 		}
 
 		/* Move all attribute values to map to the new computed indices , also expand the vertice stack to match our new vertexPtr. */
@@ -844,16 +861,20 @@ THREE.BufferGeometry.prototype = {
 		/* Create a copy of all attributes for reordering. */
 		var sortedAttributes = {};
 		for ( var attr in this.attributes ) {
+
 			if ( attr == 'index' )
 				continue;
 			var sourceArray = this.attributes[ attr ].array;
 			sortedAttributes[ attr ] = new sourceArray.constructor( this.attributes[ attr ].itemSize * vertexCount );
+
 		}
 
 		/* Move attribute positions based on the new index map */
 		for ( var new_vid = 0; new_vid < vertexCount; new_vid ++ ) {
+
 			var vid = indexMap[ new_vid ];
 			for ( var attr in this.attributes ) {
+
 				if ( attr == 'index' )
 					continue;
 				var attrArray = this.attributes[ attr ].array;
@@ -861,65 +882,70 @@ THREE.BufferGeometry.prototype = {
 				var sortedAttr = sortedAttributes[ attr ];
 				for ( var k = 0; k < attrSize; k ++ )
 					sortedAttr[ new_vid * attrSize + k ] = attrArray[ vid * attrSize + k ];
+
 			}
+
 		}
 
 		/* Carry the new sorted buffers locally */
 		this.attributes[ 'index' ].array = indexBuffer;
 		for ( var attr in this.attributes ) {
+
 			if ( attr == 'index' )
 				continue;
 			this.attributes[ attr ].array = sortedAttributes[ attr ];
 			this.attributes[ attr ].numItems = this.attributes[ attr ].itemSize * vertexCount;
+
 		}
+
 	},
 
 	toJSON: function( meta ) {
 
 	  // we will store all serialization data on 'data'
-	  var data = {};
+		var data = {};
 
 	  // meta is a hash used to collect geometries, materials.
 	  // not providing it implies that this is the root object
 	  // being serialized.
-	  if ( meta === undefined ) {
+		if ( meta === undefined ) {
 
 	    // initialize meta obj
-	    meta = {
-	      geometries: [],
-	      materials: []
+			meta = {
+				geometries: [],
+				materials: []
 	    }
 
 	    // bind meta's geometry and material collections to our 'data' b/c
 	    // this is the root obj being serialized
-	    data.geometries = meta.geometries;
-	    data.materials = meta.materials;
+			data.geometries = meta.geometries;
+			data.materials = meta.materials;
 
 	    // add metadata
-	    data.metadata = {
+			data.metadata = {
 				version: 4.4,
 				type: 'BufferGeometry',
 				generator: 'BufferGeometry.toJSON'
 			}
 
-	  }
+		}
 
 	  // only serialize if not in meta geometries cache
-	  if ( meta.geometries[ this.uuid ] !== undefined ) {
+		if ( meta.geometries[ this.uuid ] !== undefined ) {
 
-	  	data = meta.geometries[ this.uuid ];
+			data = meta.geometries[ this.uuid ];
 
-	  } else {
+		} else {
 
 		  // standard BufferGeometry serialization
 
-		  data.type = this.type;
-		  data.uuid = this.uuid;
-		  if ( this.name !== '' ) data.name = this.name;
-		  data.data = {};
-		  data.data.attributes = {};
+			data.type = this.type;
+			data.uuid = this.uuid;
+			if ( this.name !== '' ) data.name = this.name;
+			data.data = {};
+			data.data.attributes = {};
 
-		  var attributes = this.attributes;
+			var attributes = this.attributes;
 			var offsets = this.offsets;
 			var boundingSphere = this.boundingSphere;
 
@@ -957,7 +983,7 @@ THREE.BufferGeometry.prototype = {
 
 		}
 
-	  return data;
+		return data;
 
 	},
 

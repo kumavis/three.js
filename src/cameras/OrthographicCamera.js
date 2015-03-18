@@ -55,6 +55,7 @@ THREE.OrthographicCamera.prototype.clone = function () {
 	camera.projectionMatrix.copy( this.projectionMatrix );
 
 	return camera;
+
 };
 
 THREE.OrthographicCamera.prototype.toJSON = function ( meta ) {

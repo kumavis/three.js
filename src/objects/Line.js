@@ -72,7 +72,7 @@ THREE.Line.prototype.raycast = ( function () {
 
 				}
 
-				for ( var oi = 0; oi < offsets.length; oi ++) {
+				for ( var oi = 0; oi < offsets.length; oi ++ ) {
 
 					var start = offsets[ oi ].start;
 					var count = offsets[ oi ].count;
@@ -194,12 +194,12 @@ THREE.Line.prototype.clone = function ( object ) {
 
 THREE.Line.prototype.toJSON = function ( meta ) {
 
-  var data = THREE.Object3D.prototype.toJSON.call( this, meta );
+	var data = THREE.Object3D.prototype.toJSON.call( this, meta );
 
 	data.object.geometry = this.geometry.toJSON( meta ).uuid;
 	data.object.material = this.material.toJSON( meta ).uuid;
 	data.object.mode = this.mode;
 
-  return data;
+	return data;
 
 };

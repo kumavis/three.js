@@ -126,9 +126,9 @@ THREE.MeshBasicMaterial.prototype.toJSON = function ( meta ) {
 		data = THREE.Material.prototype.toJSON.call( this, meta );
 
 		data.color = this.color.getHex();
-	  if ( this.vertexColors !== THREE.NoColors ) data.vertexColors = this.vertexColors;
-	  if ( this.blending !== THREE.NormalBlending ) data.blending = this.blending;
-	  if ( this.side !== THREE.FrontSide ) data.side = this.side;
+		if ( this.vertexColors !== THREE.NoColors ) data.vertexColors = this.vertexColors;
+		if ( this.blending !== THREE.NormalBlending ) data.blending = this.blending;
+		if ( this.side !== THREE.FrontSide ) data.side = this.side;
 
 	} else {
 

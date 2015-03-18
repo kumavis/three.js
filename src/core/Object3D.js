@@ -25,12 +25,16 @@ THREE.Object3D = function () {
 	var scale = new THREE.Vector3( 1, 1, 1 );
 
 	var onRotationChange = function () {
-		quaternion.setFromEuler( rotation, false );
-	};
+
+quaternion.setFromEuler( rotation, false );
+
+};
 
 	var onQuaternionChange = function () {
-		rotation.setFromQuaternion( quaternion, undefined, false );
-	};
+
+rotation.setFromQuaternion( quaternion, undefined, false );
+
+};
 
 	rotation.onChange( onRotationChange );
 	quaternion.onChange( onQuaternionChange );
@@ -572,76 +576,76 @@ THREE.Object3D.prototype = {
 		var isRootObject = ( meta === undefined );
 
 	  // we will store all serialization data on 'data'
-	  var data = {};
-	  var metadata;
+		var data = {};
+		var metadata;
 
 	  // meta is a hash used to collect geometries, materials.
 	  // not providing it implies that this is the root object
 	  // being serialized.
-	  if ( isRootObject ) {
+		if ( isRootObject ) {
 
 	    // initialize meta obj
-	    meta = {
-	      geometries: [],
-	      materials: []
+			meta = {
+				geometries: [],
+				materials: []
 	    }
 
 	    // bind meta's geometry and material collections to our 'data' b/c
 	    // this is the root obj being serialized
-	    data.geometries = meta.geometries;
-	    data.materials = meta.materials;
+			data.geometries = meta.geometries;
+			data.materials = meta.materials;
 
 	    // add metadata
-	    metadata = {
+			metadata = {
 				version: 4.4,
 				type: 'Object',
 				generator: 'Object3D.toJSON'
 			}
 
-	  }
+		}
 
 	  // standard Object3D serialization
 
-	  data.type = this.type;
-	  data.uuid = this.uuid;
-	  if ( this.name !== '' ) data.name = this.name;
-	  if ( JSON.stringify( this.userData ) !== '{}' ) data.userData = this.userData;
-	  if ( this.visible !== true ) data.visible = this.visible;
+		data.type = this.type;
+		data.uuid = this.uuid;
+		if ( this.name !== '' ) data.name = this.name;
+		if ( JSON.stringify( this.userData ) !== '{}' ) data.userData = this.userData;
+		if ( this.visible !== true ) data.visible = this.visible;
 
-	  data.matrix = this.matrix.toArray();
+		data.matrix = this.matrix.toArray();
 
-	  if ( this.children.length > 0 ) {
+		if ( this.children.length > 0 ) {
 
-	    data.children = [];
+			data.children = [];
 
-	    for ( var i = 0; i < this.children.length; i ++ ) {
+			for ( var i = 0; i < this.children.length; i ++ ) {
 
-	      data.children.push( this.children[ i ].toJSON( meta ).object );
+				data.children.push( this.children[ i ].toJSON( meta ).object );
 
-	    }
+			}
 
-	  }
+		}
 
 	  // wrap serialized object with additional data
 
-	  var output;
+		var output;
 
-	  if ( isRootObject ) {
+		if ( isRootObject ) {
 
-	  	output = {
-	  		metadata: metadata,
-	  		geometries: geometries,
-	  		materials: materials,
-	  		object: data
+			output = {
+				metadata: metadata,
+				geometries: geometries,
+				materials: materials,
+				object: data
 	  	};
 
-	  } else {
+		} else {
 
-	  	ouput = { object: data };
+			ouput = { object: data };
 
-	  }
+		}
 
-	  return output;
+		return output;
 
 	},
 

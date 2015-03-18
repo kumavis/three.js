@@ -53,8 +53,8 @@ THREE.MeshDepthMaterial.prototype.toJSON = function ( meta ) {
 
 		data = THREE.Material.prototype.toJSON.call( this, meta );
 
-	  if ( this.blending !== THREE.NormalBlending ) data.blending = this.blending;
-	  if ( this.side !== THREE.FrontSide ) data.side = this.side;
+		if ( this.blending !== THREE.NormalBlending ) data.blending = this.blending;
+		if ( this.side !== THREE.FrontSide ) data.side = this.side;
 
 	} else {
 

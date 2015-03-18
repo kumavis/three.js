@@ -119,9 +119,9 @@ THREE.ShaderMaterial.prototype.toJSON = function ( meta ) {
 
 		data = THREE.Material.prototype.toJSON.call( this, meta );
 
-	  data.uniforms = this.uniforms;
-	  data.vertexShader = this.vertexShader;
-	  data.fragmentShader = this.fragmentShader;
+		data.uniforms = this.uniforms;
+		data.vertexShader = this.vertexShader;
+		data.fragmentShader = this.fragmentShader;
 
 	} else {
 

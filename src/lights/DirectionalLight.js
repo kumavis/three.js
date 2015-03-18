@@ -114,11 +114,11 @@ THREE.DirectionalLight.prototype.clone = function () {
 
 THREE.DirectionalLight.prototype.toJSON = function ( meta ) {
 
-  var data = THREE.Object3D.prototype.toJSON.call( this, meta );
+	var data = THREE.Object3D.prototype.toJSON.call( this, meta );
 
-  data.object.color = this.color.getHex();
+	data.object.color = this.color.getHex();
 	data.object.intensity = this.intensity;
 
-  return data;
+	return data;
 
 };
