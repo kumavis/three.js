@@ -153,6 +153,17 @@ THREE.PointCloud.prototype.clone = function ( object ) {
 
 };
 
+THREE.PointCloud.prototype.toJSON = function ( meta ) {
+
+  var data = THREE.Object3D.prototype.toJSON.call( this, meta );
+
+	data.geometry = parseGeometry( this.geometry );
+	data.material = parseMaterial( this.material );
+
+  return data
+
+};
+
 // Backwards compatibility
 
 THREE.ParticleSystem = function ( geometry, material ) {

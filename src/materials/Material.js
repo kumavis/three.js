@@ -107,83 +107,58 @@ THREE.Material.prototype = {
 
 	},
 
-	toJSON: function () {
+	toJSON: function( meta ) {
 
-		var output = {
-			metadata: {
-				version: 4.2,
-				type: 'material',
-				generator: 'MaterialExporter'
-			},
-			uuid: this.uuid,
-			type: this.type
-		};
+	  // we will store all serialization data on 'data'
+	  var data = {};
 
-		if ( this.name !== "" ) output.name = this.name;
+	  // meta is a hash used to collect geometries, materials.
+	  // not providing it implies that this is the root object
+	  // being serialized.
+	  if ( meta === undefined ) {
 
-		if ( this instanceof THREE.MeshBasicMaterial ) {
+	    // initialize meta obj
+	    meta = {
+	      geometries: [],
+	      materials: []
+	    }
 
-			output.color = this.color.getHex();
-			if ( this.vertexColors !== THREE.NoColors ) output.vertexColors = this.vertexColors;
-			if ( this.blending !== THREE.NormalBlending ) output.blending = this.blending;
-			if ( this.side !== THREE.FrontSide ) output.side = this.side;
+	    // bind meta's geometry and material collections to our 'data' b/c
+	    // this is the root obj being serialized
+	    data.geometries = meta.geometries;
+	    data.materials = meta.materials;
 
-		} else if ( this instanceof THREE.MeshLambertMaterial ) {
+	    // add metadata
+	    data.metadata = {
+				version: 4.4,
+				type: 'Material',
+				generator: 'Material.toJSON'
+			}
 
-			output.color = this.color.getHex();
-			output.emissive = this.emissive.getHex();
-			if ( this.vertexColors !== THREE.NoColors ) output.vertexColors = this.vertexColors;
-			if ( this.shading !== THREE.SmoothShading ) output.shading = this.shading;
-			if ( this.blending !== THREE.NormalBlending ) output.blending = this.blending;
-			if ( this.side !== THREE.FrontSide ) output.side = this.side;
+	  }
 
-		} else if ( this instanceof THREE.MeshPhongMaterial ) {
+	  // only serialize if not in meta materials cache
+	  if ( meta.materials[ this.uuid ] !== undefined ) {
 
-			output.color = this.color.getHex();
-			output.emissive = this.emissive.getHex();
-			output.specular = this.specular.getHex();
-			output.shininess = this.shininess;
-			if ( this.vertexColors !== THREE.NoColors ) output.vertexColors = this.vertexColors;
-			if ( this.shading !== THREE.SmoothShading ) output.shading = this.shading;
-			if ( this.blending !== THREE.NormalBlending ) output.blending = this.blending;
-			if ( this.side !== THREE.FrontSide ) output.side = this.side;
+	  	data = meta.materials[ this.uuid ]
 
-		} else if ( this instanceof THREE.MeshNormalMaterial ) {
+	  } else {
 
-			if ( this.blending !== THREE.NormalBlending ) output.blending = this.blending;
-			if ( this.side !== THREE.FrontSide ) output.side = this.side;
+		  // standard Material serialization
+		  data.type = this.type;
+		  data.uuid = this.uuid;
+		  if ( this.name !== '' ) data.name = this.name;
 
-		} else if ( this instanceof THREE.MeshDepthMaterial ) {
+		  if ( this.opacity < 1 ) data.opacity = this.opacity;
+			if ( this.transparent !== false ) data.transparent = this.transparent;
+			if ( this.wireframe !== false ) data.wireframe = this.wireframe;
 
-			if ( this.blending !== THREE.NormalBlending ) output.blending = this.blending;
-			if ( this.side !== THREE.FrontSide ) output.side = this.side;
-
-		} else if ( this instanceof THREE.PointCloudMaterial ) {
-
-			output.size  = this.size;
-			output.sizeAttenuation = this.sizeAttenuation;
-			output.color = this.color.getHex();
-
-			if ( this.vertexColors !== THREE.NoColors ) output.vertexColors = this.vertexColors;
-			if ( this.blending !== THREE.NormalBlending ) output.blending = this.blending;
-
-		} else if ( this instanceof THREE.ShaderMaterial ) {
-
-			output.uniforms = this.uniforms;
-			output.vertexShader = this.vertexShader;
-			output.fragmentShader = this.fragmentShader;
-
-		} else if ( this instanceof THREE.SpriteMaterial ) {
-
-			output.color = this.color.getHex();
+			// add to meta materials cache
+			meta.materials[ this.uuid ] = data;
 
 		}
 
-		if ( this.opacity < 1 ) output.opacity = this.opacity;
-		if ( this.transparent !== false ) output.transparent = this.transparent;
-		if ( this.wireframe !== false ) output.wireframe = this.wireframe;
-
-		return output;
+	  return data;
 
 	},
 

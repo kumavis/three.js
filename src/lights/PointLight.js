@@ -30,3 +30,16 @@ THREE.PointLight.prototype.clone = function () {
 	return light;
 
 };
+
+THREE.PointLight.prototype.toJSON = function ( meta ) {
+
+  var data = THREE.Object3D.prototype.toJSON.call( this, meta );
+
+	data.color = this.color.getHex();
+	data.intensity = this.intensity;
+	data.distance = this.distance;
+	data.decay = this.decay;
+
+  return data;
+
+};

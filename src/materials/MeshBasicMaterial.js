@@ -115,3 +115,27 @@ THREE.MeshBasicMaterial.prototype.clone = function () {
 	return material;
 
 };
+
+THREE.MeshBasicMaterial.prototype.toJSON = function ( meta ) {
+
+	var data;
+
+	// only serialize if not in cache
+	if ( meta === undefined || meta.materials[ this.uuid ] === undefined ) {
+
+		data = THREE.Material.prototype.toJSON.call( this, meta );
+
+		data.color = this.color.getHex();
+	  if ( this.vertexColors !== THREE.NoColors ) data.vertexColors = this.vertexColors;
+	  if ( this.blending !== THREE.NormalBlending ) data.blending = this.blending;
+	  if ( this.side !== THREE.FrontSide ) data.side = this.side;
+
+	} else {
+
+		data = meta.materials[ this.uuid ];
+
+	}
+
+	return data
+
+};

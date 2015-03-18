@@ -109,3 +109,26 @@ THREE.ShaderMaterial.prototype.clone = function () {
 	return material;
 
 };
+
+THREE.ShaderMaterial.prototype.toJSON = function ( meta ) {
+
+	var data;
+
+	// only serialize if not in cache
+	if ( meta === undefined || meta.materials[ this.uuid ] === undefined ) {
+
+		data = THREE.Material.prototype.toJSON.call( this, meta );
+
+	  data.uniforms = this.uniforms;
+	  data.vertexShader = this.vertexShader;
+	  data.fragmentShader = this.fragmentShader;
+
+	} else {
+
+		data = meta.materials[ this.uuid ];
+
+	}
+
+	return data
+
+};

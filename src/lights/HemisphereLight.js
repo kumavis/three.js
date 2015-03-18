@@ -30,3 +30,14 @@ THREE.HemisphereLight.prototype.clone = function () {
 	return light;
 
 };
+
+THREE.HemisphereLightprototype.toJSON = function ( meta ) {
+
+  var data = THREE.Object3D.prototype.toJSON.call( this, meta );
+
+	data.color = this.color.getHex();
+	data.groundColor = this.groundColor.getHex();
+
+  return data;
+
+};

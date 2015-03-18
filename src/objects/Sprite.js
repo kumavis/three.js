@@ -69,6 +69,16 @@ THREE.Sprite.prototype.clone = function ( object ) {
 
 };
 
+THREE.Sprite.prototype.toJSON = function ( meta ) {
+
+  var data = THREE.Object3D.prototype.toJSON.call( this, meta );
+
+	data.material = parseMaterial( this.material ).uuid;
+
+  return data
+
+};
+
 // Backwards compatibility
 
 THREE.Particle = THREE.Sprite;

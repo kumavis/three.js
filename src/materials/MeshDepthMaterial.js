@@ -43,3 +43,25 @@ THREE.MeshDepthMaterial.prototype.clone = function () {
 	return material;
 
 };
+
+THREE.MeshDepthMaterial.prototype.toJSON = function ( meta ) {
+
+	var data;
+
+	// only serialize if not in cache
+	if ( meta === undefined || meta.materials[ this.uuid ] === undefined ) {
+
+		data = THREE.Material.prototype.toJSON.call( this, meta );
+
+	  if ( this.blending !== THREE.NormalBlending ) data.blending = this.blending;
+	  if ( this.side !== THREE.FrontSide ) data.side = this.side;
+
+	} else {
+
+		data = meta.materials[ this.uuid ];
+
+	}
+
+	return data
+
+};

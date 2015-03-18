@@ -874,55 +874,90 @@ THREE.BufferGeometry.prototype = {
 		}
 	},
 
-	toJSON: function () {
+	toJSON: function( meta ) {
 
-		var output = {
-			metadata: {
-				version: 4.0,
+	  // we will store all serialization data on 'data'
+	  var data = {};
+
+	  // meta is a hash used to collect geometries, materials.
+	  // not providing it implies that this is the root object
+	  // being serialized.
+	  if ( meta === undefined ) {
+
+	    // initialize meta obj
+	    meta = {
+	      geometries: [],
+	      materials: []
+	    }
+
+	    // bind meta's geometry and material collections to our 'data' b/c
+	    // this is the root obj being serialized
+	    data.geometries = meta.geometries;
+	    data.materials = meta.materials;
+
+	    // add metadata
+	    data.metadata = {
+				version: 4.4,
 				type: 'BufferGeometry',
-				generator: 'BufferGeometryExporter'
-			},
-			uuid: this.uuid,
-			type: this.type,
-			data: {
-				attributes: {}
+				generator: 'BufferGeometry.toJSON'
 			}
-		};
 
-		var attributes = this.attributes;
-		var offsets = this.offsets;
-		var boundingSphere = this.boundingSphere;
+	  }
 
-		for ( var key in attributes ) {
+	  // only serialize if not in meta geometries cache
+	  if ( meta.geometries[ this.uuid ] !== undefined ) {
 
-			var attribute = attributes[ key ];
+	  	data = meta.geometries[ this.uuid ];
 
-			var array = Array.prototype.slice.call( attribute.array );
+	  } else {
 
-			output.data.attributes[ key ] = {
-				itemSize: attribute.itemSize,
-				type: attribute.array.constructor.name,
-				array: array
+		  // standard BufferGeometry serialization
+
+		  data.type = this.type;
+		  data.uuid = this.uuid;
+		  if ( this.name !== '' ) data.name = this.name;
+		  data.data = {};
+		  data.data.attributes = {};
+
+		  var attributes = this.attributes;
+			var offsets = this.offsets;
+			var boundingSphere = this.boundingSphere;
+
+			for ( var key in attributes ) {
+
+				var attribute = attributes[ key ];
+
+				var array = Array.prototype.slice.call( attribute.array );
+
+				data.data.attributes[ key ] = {
+					itemSize: attribute.itemSize,
+					type: attribute.array.constructor.name,
+					array: array
+				}
+
 			}
+
+			if ( offsets.length > 0 ) {
+
+				data.data.offsets = JSON.parse( JSON.stringify( offsets ) );
+
+			}
+
+			if ( boundingSphere !== null ) {
+
+				data.data.boundingSphere = {
+					center: boundingSphere.center.toArray(),
+					radius: boundingSphere.radius
+				}
+
+			}
+
+			// add to meta geometries cache
+			meta.geometries[ this.uuid ] = data;
 
 		}
 
-		if ( offsets.length > 0 ) {
-
-			output.data.offsets = JSON.parse( JSON.stringify( offsets ) );
-
-		}
-
-		if ( boundingSphere !== null ) {
-
-			output.data.boundingSphere = {
-				center: boundingSphere.center.toArray(),
-				radius: boundingSphere.radius
-			}
-
-		}
-
-		return output;
+	  return data;
 
 	},
 
