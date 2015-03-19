@@ -814,8 +814,6 @@ THREE.Geometry.prototype = {
 	  data.type = this.type;
 	  data.uuid = this.uuid;
 	  if ( this.name !== '' ) data.name = this.name;
-	  data.data = {};
-	  data.data.attributes = {};
 
 	  if ( this.parameters !== undefined ) {
 
