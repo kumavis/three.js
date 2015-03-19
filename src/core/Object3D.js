@@ -582,14 +582,9 @@ THREE.Object3D.prototype = {
 
 	    // initialize meta obj
 	    meta = {
-	      geometries: [],
-	      materials: []
+	      geometries: {},
+	      materials: {}
 	    }
-
-	    // bind meta's geometry and material collections to our 'data' b/c
-	    // this is the root obj being serialized
-	    data.geometries = meta.geometries;
-	    data.materials = meta.materials;
 
 	    // add metadata
 	    metadata = {
@@ -630,8 +625,8 @@ THREE.Object3D.prototype = {
 
 	  	output = {
 	  		metadata: metadata,
-	  		geometries: meta.geometries,
-	  		materials: meta.materials,
+	  		geometries: objToValues(meta.geometries),
+	  		materials: objToValues(meta.materials),
 	  		object: data
 	  	};
 
@@ -642,6 +637,15 @@ THREE.Object3D.prototype = {
 	  }
 
 	  return output;
+
+	  // extract an array of values from an Object
+	  function objToValues ( obj ) {
+	  	var values = [];
+	  	for ( var key in obj ) {
+	  		values.push( obj[ key ] );
+	  	}
+	  	return values;
+	  }
 
 	},
 
