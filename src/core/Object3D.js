@@ -625,8 +625,8 @@ THREE.Object3D.prototype = {
 
 	  	output = {
 	  		metadata: metadata,
-	  		geometries: objToValues(meta.geometries),
-	  		materials: objToValues(meta.materials),
+	  		geometries: extractFromCache(meta.geometries),
+	  		materials: extractFromCache(meta.materials),
 	  		object: data
 	  	};
 
@@ -638,11 +638,15 @@ THREE.Object3D.prototype = {
 
 	  return output;
 
-	  // extract an array of values from an Object
-	  function objToValues ( obj ) {
+	  // extract data from the cache hash
+	  // remove metadata on each item
+	  // and return as array
+	  function extractFromCache ( cache ) {
 	  	var values = [];
-	  	for ( var key in obj ) {
-	  		values.push( obj[ key ] );
+	  	for ( var key in cache ) {
+	  		var data = cache[ key ];
+	  		delete data.metadata;
+	  		values.push( data );
 	  	}
 	  	return values;
 	  }
