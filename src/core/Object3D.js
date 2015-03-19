@@ -630,14 +630,14 @@ THREE.Object3D.prototype = {
 
 	  	output = {
 	  		metadata: metadata,
-	  		geometries: geometries,
-	  		materials: materials,
+	  		geometries: meta.geometries,
+	  		materials: meta.materials,
 	  		object: data
 	  	};
 
 	  } else {
 
-	  	ouput = { object: data };
+	  	output = { object: data };
 
 	  }
 

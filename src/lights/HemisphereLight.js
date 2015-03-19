@@ -31,7 +31,7 @@ THREE.HemisphereLight.prototype.clone = function () {
 
 };
 
-THREE.HemisphereLightprototype.toJSON = function ( meta ) {
+THREE.HemisphereLight.prototype.toJSON = function ( meta ) {
 
   var data = THREE.Object3D.prototype.toJSON.call( this, meta );
 
