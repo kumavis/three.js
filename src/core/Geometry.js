@@ -797,233 +797,206 @@ THREE.Geometry.prototype = {
 
 	},
 
-	toJSON: function( meta ) {
+	toJSON: function() {
 
 	  // we will store all serialization data on 'data'
 	  var data = {};
 
-	  // meta is a hash used to collect geometries, materials.
-	  // not providing it implies that this is the root object
-	  // being serialized.
-	  if ( meta === undefined ) {
+    // add metadata
+    data.metadata = {
+			version: 4.4,
+			type: 'Geometry',
+			generator: 'Geometry.toJSON'
+		};
 
-	    // initialize meta obj
-	    meta = {
-	      geometries: [],
-	      materials: []
-	    }
+	  // standard Geometry serialization
 
-	    // bind meta's geometry and material collections to our 'data' b/c
-	    // this is the root obj being serialized
-	    data.geometries = meta.geometries;
-	    data.materials = meta.materials;
+	  data.type = this.type;
+	  data.uuid = this.uuid;
+	  if ( this.name !== '' ) data.name = this.name;
+	  data.data = {};
+	  data.data.attributes = {};
 
-	    // add metadata
-	    data.metadata = {
-				version: 4.4,
-				type: 'Geometry',
-				generator: 'Geometry.toJSON'
-			}
+	  if ( this.parameters !== undefined ) {
 
-	  }
+			var parameters = this.parameters;
 
-	  // only serialize if not in meta geometries cache
-	  if ( meta.geometries[ this.uuid ] !== undefined ) {
+			for ( var key in parameters ) {
 
-	  	data = meta.geometries[ this.uuid ];
-
-	  } else {
-
-		  // standard Geometry serialization
-
-		  data.type = this.type;
-		  data.uuid = this.uuid;
-		  if ( this.name !== '' ) data.name = this.name;
-		  data.data = {};
-		  data.data.attributes = {};
-
-		  if ( this.parameters !== undefined ) {
-
-				var parameters = this.parameters;
-
-				for ( var key in parameters ) {
-
-					if ( parameters[ key ] !== undefined ) data[ key ] = parameters[ key ];
-
-				}
-
-				return data;
+				if ( parameters[ key ] !== undefined ) data[ key ] = parameters[ key ];
 
 			}
 
-			var vertices = [];
+			return data;
 
-			for ( var i = 0; i < this.vertices.length; i ++ ) {
+		}
 
-				var vertex = this.vertices[ i ];
-				vertices.push( vertex.x, vertex.y, vertex.z );
+		var vertices = [];
+
+		for ( var i = 0; i < this.vertices.length; i ++ ) {
+
+			var vertex = this.vertices[ i ];
+			vertices.push( vertex.x, vertex.y, vertex.z );
+
+		}
+
+		var faces = [];
+		var normals = [];
+		var normalsHash = {};
+		var colors = [];
+		var colorsHash = {};
+		var uvs = [];
+		var uvsHash = {};
+
+		for ( var i = 0; i < this.faces.length; i ++ ) {
+
+			var face = this.faces[ i ];
+
+			var hasMaterial = false; // face.materialIndex !== undefined;
+			var hasFaceUv = false; // deprecated
+			var hasFaceVertexUv = this.faceVertexUvs[ 0 ][ i ] !== undefined;
+			var hasFaceNormal = face.normal.length() > 0;
+			var hasFaceVertexNormal = face.vertexNormals.length > 0;
+			var hasFaceColor = face.color.r !== 1 || face.color.g !== 1 || face.color.b !== 1;
+			var hasFaceVertexColor = face.vertexColors.length > 0;
+
+			var faceType = 0;
+
+			faceType = setBit( faceType, 0, 0 );
+			faceType = setBit( faceType, 1, hasMaterial );
+			faceType = setBit( faceType, 2, hasFaceUv );
+			faceType = setBit( faceType, 3, hasFaceVertexUv );
+			faceType = setBit( faceType, 4, hasFaceNormal );
+			faceType = setBit( faceType, 5, hasFaceVertexNormal );
+			faceType = setBit( faceType, 6, hasFaceColor );
+			faceType = setBit( faceType, 7, hasFaceVertexColor );
+
+			faces.push( faceType );
+			faces.push( face.a, face.b, face.c );
+
+
+			/*
+			if ( hasMaterial ) {
+
+				faces.push( face.materialIndex );
+
+			}
+			*/
+
+			if ( hasFaceVertexUv ) {
+
+				var faceVertexUvs = this.faceVertexUvs[ 0 ][ i ];
+
+				faces.push(
+					getUvIndex( faceVertexUvs[ 0 ] ),
+					getUvIndex( faceVertexUvs[ 1 ] ),
+					getUvIndex( faceVertexUvs[ 2 ] )
+				);
 
 			}
 
-			var faces = [];
-			var normals = [];
-			var normalsHash = {};
-			var colors = [];
-			var colorsHash = {};
-			var uvs = [];
-			var uvsHash = {};
+			if ( hasFaceNormal ) {
 
-			for ( var i = 0; i < this.faces.length; i ++ ) {
-
-				var face = this.faces[ i ];
-
-				var hasMaterial = false; // face.materialIndex !== undefined;
-				var hasFaceUv = false; // deprecated
-				var hasFaceVertexUv = this.faceVertexUvs[ 0 ][ i ] !== undefined;
-				var hasFaceNormal = face.normal.length() > 0;
-				var hasFaceVertexNormal = face.vertexNormals.length > 0;
-				var hasFaceColor = face.color.r !== 1 || face.color.g !== 1 || face.color.b !== 1;
-				var hasFaceVertexColor = face.vertexColors.length > 0;
-
-				var faceType = 0;
-
-				faceType = setBit( faceType, 0, 0 );
-				faceType = setBit( faceType, 1, hasMaterial );
-				faceType = setBit( faceType, 2, hasFaceUv );
-				faceType = setBit( faceType, 3, hasFaceVertexUv );
-				faceType = setBit( faceType, 4, hasFaceNormal );
-				faceType = setBit( faceType, 5, hasFaceVertexNormal );
-				faceType = setBit( faceType, 6, hasFaceColor );
-				faceType = setBit( faceType, 7, hasFaceVertexColor );
-
-				faces.push( faceType );
-				faces.push( face.a, face.b, face.c );
-
-
-				/*
-				if ( hasMaterial ) {
-
-					faces.push( face.materialIndex );
-
-				}
-				*/
-
-				if ( hasFaceVertexUv ) {
-
-					var faceVertexUvs = this.faceVertexUvs[ 0 ][ i ];
-
-					faces.push(
-						getUvIndex( faceVertexUvs[ 0 ] ),
-						getUvIndex( faceVertexUvs[ 1 ] ),
-						getUvIndex( faceVertexUvs[ 2 ] )
-					);
-
-				}
-
-				if ( hasFaceNormal ) {
-
-					faces.push( getNormalIndex( face.normal ) );
-
-				}
-
-				if ( hasFaceVertexNormal ) {
-
-					var vertexNormals = face.vertexNormals;
-
-					faces.push(
-						getNormalIndex( vertexNormals[ 0 ] ),
-						getNormalIndex( vertexNormals[ 1 ] ),
-						getNormalIndex( vertexNormals[ 2 ] )
-					);
-
-				}
-
-				if ( hasFaceColor ) {
-
-					faces.push( getColorIndex( face.color ) );
-
-				}
-
-				if ( hasFaceVertexColor ) {
-
-					var vertexColors = face.vertexColors;
-
-					faces.push(
-						getColorIndex( vertexColors[ 0 ] ),
-						getColorIndex( vertexColors[ 1 ] ),
-						getColorIndex( vertexColors[ 2 ] )
-					);
-
-				}
+				faces.push( getNormalIndex( face.normal ) );
 
 			}
 
-			function setBit( value, position, enabled ) {
+			if ( hasFaceVertexNormal ) {
 
-				return enabled ? value | ( 1 << position ) : value & ( ~ ( 1 << position) );
+				var vertexNormals = face.vertexNormals;
+
+				faces.push(
+					getNormalIndex( vertexNormals[ 0 ] ),
+					getNormalIndex( vertexNormals[ 1 ] ),
+					getNormalIndex( vertexNormals[ 2 ] )
+				);
 
 			}
 
-			function getNormalIndex( normal ) {
+			if ( hasFaceColor ) {
 
-				var hash = normal.x.toString() + normal.y.toString() + normal.z.toString();
+				faces.push( getColorIndex( face.color ) );
 
-				if ( normalsHash[ hash ] !== undefined ) {
+			}
 
-					return normalsHash[ hash ];
+			if ( hasFaceVertexColor ) {
 
-				}
+				var vertexColors = face.vertexColors;
 
-				normalsHash[ hash ] = normals.length / 3;
-				normals.push( normal.x, normal.y, normal.z );
+				faces.push(
+					getColorIndex( vertexColors[ 0 ] ),
+					getColorIndex( vertexColors[ 1 ] ),
+					getColorIndex( vertexColors[ 2 ] )
+				);
+
+			}
+
+		}
+
+		function setBit( value, position, enabled ) {
+
+			return enabled ? value | ( 1 << position ) : value & ( ~ ( 1 << position) );
+
+		}
+
+		function getNormalIndex( normal ) {
+
+			var hash = normal.x.toString() + normal.y.toString() + normal.z.toString();
+
+			if ( normalsHash[ hash ] !== undefined ) {
 
 				return normalsHash[ hash ];
 
 			}
 
-			function getColorIndex( color ) {
+			normalsHash[ hash ] = normals.length / 3;
+			normals.push( normal.x, normal.y, normal.z );
 
-				var hash = color.r.toString() + color.g.toString() + color.b.toString();
+			return normalsHash[ hash ];
 
-				if ( colorsHash[ hash ] !== undefined ) {
+		}
 
-					return colorsHash[ hash ];
+		function getColorIndex( color ) {
 
-				}
+			var hash = color.r.toString() + color.g.toString() + color.b.toString();
 
-				colorsHash[ hash ] = colors.length;
-				colors.push( color.getHex() );
+			if ( colorsHash[ hash ] !== undefined ) {
 
 				return colorsHash[ hash ];
 
 			}
 
-			function getUvIndex( uv ) {
+			colorsHash[ hash ] = colors.length;
+			colors.push( color.getHex() );
 
-				var hash = uv.x.toString() + uv.y.toString();
+			return colorsHash[ hash ];
 
-				if ( uvsHash[ hash ] !== undefined ) {
+		}
 
-					return uvsHash[ hash ];
+		function getUvIndex( uv ) {
 
-				}
+			var hash = uv.x.toString() + uv.y.toString();
 
-				uvsHash[ hash ] = uvs.length / 2;
-				uvs.push( uv.x, uv.y );
+			if ( uvsHash[ hash ] !== undefined ) {
 
 				return uvsHash[ hash ];
 
 			}
 
-			data.data = {};
+			uvsHash[ hash ] = uvs.length / 2;
+			uvs.push( uv.x, uv.y );
 
-			data.data.vertices = vertices;
-			data.data.normals = normals;
-			if ( colors.length > 0 ) data.data.colors = colors;
-			if ( uvs.length > 0 ) data.data.uvs = [ uvs ]; // temporal backward compatibility
-			data.data.faces = faces;
+			return uvsHash[ hash ];
 
 		}
+
+		data.data = {};
+
+		data.data.vertices = vertices;
+		data.data.normals = normals;
+		if ( colors.length > 0 ) data.data.colors = colors;
+		if ( uvs.length > 0 ) data.data.uvs = [ uvs ]; // temporal backward compatibility
+		data.data.faces = faces;
 
 	  return data;
 

@@ -107,56 +107,26 @@ THREE.Material.prototype = {
 
 	},
 
-	toJSON: function( meta ) {
+	toJSON: function() {
 
 	  // we will store all serialization data on 'data'
 	  var data = {};
 
-	  // meta is a hash used to collect geometries, materials.
-	  // not providing it implies that this is the root object
-	  // being serialized.
-	  if ( meta === undefined ) {
-
-	    // initialize meta obj
-	    meta = {
-	      geometries: [],
-	      materials: []
-	    }
-
-	    // bind meta's geometry and material collections to our 'data' b/c
-	    // this is the root obj being serialized
-	    data.geometries = meta.geometries;
-	    data.materials = meta.materials;
-
-	    // add metadata
-	    data.metadata = {
-				version: 4.4,
-				type: 'Material',
-				generator: 'Material.toJSON'
-			}
-
-	  }
-
-	  // only serialize if not in meta materials cache
-	  if ( meta.materials[ this.uuid ] !== undefined ) {
-
-	  	data = meta.materials[ this.uuid ]
-
-	  } else {
-
-		  // standard Material serialization
-		  data.type = this.type;
-		  data.uuid = this.uuid;
-		  if ( this.name !== '' ) data.name = this.name;
-
-		  if ( this.opacity < 1 ) data.opacity = this.opacity;
-			if ( this.transparent !== false ) data.transparent = this.transparent;
-			if ( this.wireframe !== false ) data.wireframe = this.wireframe;
-
-			// add to meta materials cache
-			meta.materials[ this.uuid ] = data;
-
+    // add metadata
+    data.metadata = {
+			version: 4.4,
+			type: 'Material',
+			generator: 'Material.toJSON'
 		}
+
+	  // standard Material serialization
+	  data.type = this.type;
+	  data.uuid = this.uuid;
+	  if ( this.name !== '' ) data.name = this.name;
+
+	  if ( this.opacity < 1 ) data.opacity = this.opacity;
+		if ( this.transparent !== false ) data.transparent = this.transparent;
+		if ( this.wireframe !== false ) data.wireframe = this.wireframe;
 
 	  return data;
 

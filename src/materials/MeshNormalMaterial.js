@@ -45,23 +45,12 @@ THREE.MeshNormalMaterial.prototype.clone = function () {
 
 };
 
-THREE.MeshPhongMaterial.prototype.toJSON = function ( meta ) {
+THREE.MeshPhongMaterial.prototype.toJSON = function () {
 
-	var data;
+	var data = THREE.Material.prototype.toJSON.call( this );
 
-	// only serialize if not in cache
-	if ( meta === undefined || meta.materials[ this.uuid ] === undefined ) {
-
-		data = THREE.Material.prototype.toJSON.call( this, meta );
-
-	  if ( this.blending !== THREE.NormalBlending ) data.blending = this.blending;
-	  if ( this.side !== THREE.FrontSide ) data.side = this.side;
-
-	} else {
-
-		data = meta.materials[ this.uuid ];
-
-	}
+  if ( this.blending !== THREE.NormalBlending ) data.blending = this.blending;
+  if ( this.side !== THREE.FrontSide ) data.side = this.side;
 
 	return data;
 

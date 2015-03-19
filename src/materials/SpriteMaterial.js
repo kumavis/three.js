@@ -56,22 +56,11 @@ THREE.SpriteMaterial.prototype.clone = function () {
 
 };
 
-THREE.SpriteMaterial.prototype.toJSON = function ( meta ) {
+THREE.SpriteMaterial.prototype.toJSON = function () {
 
-	var data;
+	var data = THREE.Material.prototype.toJSON.call( this );
 
-	// only serialize if not in cache
-	if ( meta === undefined || meta.materials[ this.uuid ] === undefined ) {
-
-		data = THREE.Material.prototype.toJSON.call( this, meta );
-
-	  data.color = this.color.getHex();
-
-	} else {
-
-		data = meta.materials[ this.uuid ];
-
-	}
+  data.color = this.color.getHex();
 
 	return data;
 

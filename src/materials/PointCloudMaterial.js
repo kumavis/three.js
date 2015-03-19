@@ -65,27 +65,16 @@ THREE.PointCloudMaterial.prototype.clone = function () {
 
 };
 
-THREE.MeshDepthMaterial.prototype.toJSON = function ( meta ) {
+THREE.MeshDepthMaterial.prototype.toJSON = function () {
 
-	var data;
+	var data = THREE.Material.prototype.toJSON.call( this );
 
-	// only serialize if not in cache
-	if ( meta === undefined || meta.materials[ this.uuid ] === undefined ) {
+  data.size  = this.size;
+  data.sizeAttenuation = this.sizeAttenuation;
+  data.color = this.color.getHex();
 
-		data = THREE.Material.prototype.toJSON.call( this, meta );
-
-	  data.size  = this.size;
-	  data.sizeAttenuation = this.sizeAttenuation;
-	  data.color = this.color.getHex();
-
-	  if ( this.vertexColors !== THREE.NoColors ) data.vertexColors = this.vertexColors;
-	  if ( this.blending !== THREE.NormalBlending ) data.blending = this.blending;
-
-	} else {
-
-		data = meta.materials[ this.uuid ];
-
-	}
+  if ( this.vertexColors !== THREE.NoColors ) data.vertexColors = this.vertexColors;
+  if ( this.blending !== THREE.NormalBlending ) data.blending = this.blending;
 
 	return data;
 
